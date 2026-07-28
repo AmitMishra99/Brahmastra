@@ -7,7 +7,6 @@ const redisClient = require("../../../shared/redis/redis.js");
 const login = async (req, res) => {
   try {
     const { token } = req.body;
-    console.log(req.body);
     const decoded = await getAuth(app).verifyIdToken(token);
 
     let user = await User.findOne({
@@ -16,7 +15,7 @@ const login = async (req, res) => {
 
     if (!user) {
       user = await User.create({
-        firebaseUid: decoded.uid,
+        firebaseUID: decoded.uid,
         name: decoded.name,
         email: decoded.email,
         avatar: decoded.picture,

@@ -1,4 +1,4 @@
-import api from "../src/utils/axios";
+import api from "../utils/axios";
 
 const getCurrentUser = async () => {
   try {
