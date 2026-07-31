@@ -22,6 +22,7 @@ app.use(cookieParser());
 app.use("/api/me", protect, getCurrentUser);
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
 app.use("/api/chat", protect, proxy(proxyWithHeader(process.env.CHAT_SERVICE)));
+app.use("/api/agent", protect, proxy(process.env.AGENT_SERVICE));
 
 app.use("/", (req, res) => {
   res.json({ message: "Gatway Server !!" });
