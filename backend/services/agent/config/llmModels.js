@@ -9,3 +9,16 @@ const gemini = new ChatGoogle({
   apiKey: process.env.GOOGLE_API_KEY,
   model: "gemini-2.5-flash",
 });
+
+const getModels = async (agent) => {
+  switch (agent) {
+    case "groq":
+      return groq;
+    case "gemini":
+      return gemini;
+    default:
+      return groq;
+  }
+};
+
+exports.getModels = getModels;
