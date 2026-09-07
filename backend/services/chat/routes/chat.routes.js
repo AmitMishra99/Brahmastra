@@ -6,7 +6,7 @@ import {
   getConversations,
   getMessages,
   saveMessage,
-} from "../controller/chat.controller";
+} from "../controller/chat.controller.js";
 
 chatRouter.get("/create-conversation", createConversation);
 chatRouter.get("/get-conversations", getConversations);
