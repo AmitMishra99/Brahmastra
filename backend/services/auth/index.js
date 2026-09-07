@@ -1,25 +1,27 @@
-const express = require("express");
-const dotenv = require("dotenv");
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-const connectDB = require("./config/connectDB");
-const router = require("./routes/auth.route");
+
+import connectDB from "./config/connectDB.js";
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(express.json());
 
-app.use("/", router);
+app.use("/", authRouter);
 
-app.get("/", (req, res) => {
-  res.send({ message: "Auth Server is working very well !!" });
+app.use("/", (req, res) => {
+  res.json({ message: "Auth Server !!" });
 });
 
 connectDB()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log("Database connection Established !!");
-      console.log(`Auth server running on port - ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Auth server running on port - ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Database cannot be connected !!", err);
+    console.log(`Auth server error - ${err}`);
   });

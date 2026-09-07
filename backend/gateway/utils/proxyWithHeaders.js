@@ -1,4 +1,4 @@
-const proxy = require("express-http-proxy");
+import proxy from "express-http-proxy";
 
 const proxyWithHeader = (serviceURL) => {
   return proxy(serviceURL, {
@@ -8,4 +8,4 @@ const proxyWithHeader = (serviceURL) => {
   });
 };
 
-module.exports = proxyWithHeader;
+export default proxyWithHeader;

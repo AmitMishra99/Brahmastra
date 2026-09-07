@@ -1,17 +1,17 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+const chatRouter = express.Router();
+import {
   createConversation,
-  getConversations,
   updateConversation,
-  saveMessage,
+  getConversations,
   getMessages,
-} = require("../controller/chat.controller");
+  saveMessage,
+} from "../controller/chat.controller";
 
-router.get("/create-conversation", createConversation);
-router.get("/get-conversations", getConversations);
-router.get("/update-conversation", updateConversation);
-router.get("save-message", saveMessage);
-router.get("/get-messages/:conversationId", getMessages);
+chatRouter.get("/create-conversation", createConversation);
+chatRouter.get("/get-conversations", getConversations);
+chatRouter.get("/update-conversation", updateConversation);
+chatRouter.get("save-message", saveMessage);
+chatRouter.get("/get-messages/:conversationId", getMessages);
 
-module.exports = router;
+export default chatRouter;

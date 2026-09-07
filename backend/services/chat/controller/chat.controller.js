@@ -1,8 +1,7 @@
-const Conversation = require("../models/conversation.model");
-const Message = require("../models/message.model");
-const mongoose = require("mongoose");
+import Message from "../models/message.model";
+import Conversation from "../models/conversation.model";
 
-const createConversation = async (req, res) => {
+export const createConversation = async (req, res) => {
   try {
     const userID = req.headers["x-user-id"];
     console.log("userID : ", userID);
@@ -17,7 +16,7 @@ const createConversation = async (req, res) => {
   }
 };
 
-const getConversations = async (req, res) => {
+export const getConversations = async (req, res) => {
   try {
     const userID = req.headers["x-user-id"];
     console.log("userID : ", userID);
@@ -32,7 +31,7 @@ const getConversations = async (req, res) => {
   }
 };
 
-const updateConversation = async (req, res) => {
+export const updateConversation = async (req, res) => {
   try {
     const { id, title } = req.body;
     const conversation = await Conversation.findByIdAndUpdate(id, {
@@ -46,7 +45,7 @@ const updateConversation = async (req, res) => {
   }
 };
 
-const saveMessage = async (req, res) => {
+export const saveMessage = async (req, res) => {
   try {
     const { conversationID, role, content } = req.body;
     const message = await Message.create({
@@ -60,7 +59,7 @@ const saveMessage = async (req, res) => {
   }
 };
 
-const getMessages = async (req, res) => {
+export const getMessages = async (req, res) => {
   try {
     const { conversationID } = req.body;
     const messages = await Message.find({
@@ -70,12 +69,4 @@ const getMessages = async (req, res) => {
   } catch (e) {
     return res.status(500).json({ message: `get messages error - ${e}` });
   }
-};
-
-module.exports = {
-  createConversation,
-  getConversations,
-  updateConversation,
-  saveMessage,
-  getMessages,
 };

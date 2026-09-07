@@ -1,4 +1,4 @@
-const redis = require("ioredis");
+import redis from "ioredis";
 
 const redisClient = new redis(process.env.REDIS_URL);
 
@@ -10,4 +10,4 @@ redisClient.on("error", (err) => {
   console.error("Redis Error:", err);
 });
 
-module.exports = redisClient;
+export default redisClient;

@@ -1,10 +1,10 @@
-const redisClient = require("../../shared/redis/redis");
+import redisClient from "../../shared/redis";
 
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     const sessionID = req.cookies?.session;
     if (!sessionID)
-      return res.status(400).json({ message: "Unaouthorized access " });
+      return res.status(400).json({ message: "Unauthorized access " });
 
     const session = await redisClient.get(`session-${sessionID}`);
 
@@ -18,5 +18,3 @@ const protect = async (req, res, next) => {
       .json({ message: `Protect middleware error -`, error });
   }
 };
-
-module.exports = protect;

@@ -1,21 +1,21 @@
-const { getAuth } = require("firebase-admin/auth");
-const app = require("../config/firebase.js");
-const User = require("../models/user.model.js");
-const crypto = require("crypto");
-const redisClient = require("../../../shared/redis/redis.js");
+import crypto from "crypto";
+import { getAuth } from "firebase-admin/auth";
+import User from "../models/user.model.js";
+import { app } from "../config/firebase.js";
+import redisClient from "../../../shared/redis/redis.js";
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { token } = req.body;
     const decoded = await getAuth(app).verifyIdToken(token);
 
     let user = await User.findOne({
-      firebaseUID: decoded.uid,
+      firebaseUid: decoded.uid,
     });
 
     if (!user) {
       user = await User.create({
-        firebaseUID: decoded.uid,
+        firebaseUid: decoded.uid,
         name: decoded.name,
         email: decoded.email,
         avatar: decoded.picture,
@@ -23,6 +23,7 @@ const login = async (req, res) => {
     }
 
     const sessionID = crypto.randomUUID();
+
     await redisClient.set(
       `session-${sessionID}`,
       JSON.stringify({
@@ -37,11 +38,10 @@ const login = async (req, res) => {
 
     res.cookie("session", sessionID, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-
     return res.status(200).json(user);
   } catch (e) {
     console.log("login using firebase error - ", e.message);
@@ -49,14 +49,13 @@ const login = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
   try {
     const sessionID = req.cookies?.session;
     await redisClient.del(`session-${sessionID}`);
     res.clearCookie("session");
-    return res.status(200).json({ message: "Logout done !!" });
+    return res.status(200).json({ message: "Logout succesfully !!" });
   } catch (e) {
     res.status(400).json({ message: `Logout Error - ${e.message}` });
   }
 };
-module.exports = { login, logout };

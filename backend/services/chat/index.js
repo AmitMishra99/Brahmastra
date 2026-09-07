@@ -1,24 +1,26 @@
-const express = require("express");
-const dotenv = require("dotenv");
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
 
-const connectDB = require("./config/connectDB");
-const router = require("./routes/chat.routes");
+import connectDB from "./config/connectDB.js";
+import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
-app.use("/", router);
+const PORT = process.env.PORT;
+
+app.use("/", chatRouter);
 
 app.get("/", (req, res) => {
-  res.send({ message: "Chat Server is working very well !!" });
+  res.send({ message: "Chat Server" });
 });
 
 connectDB()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log("Database connection Established !!");
-      console.log(`Chat server running on port - ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log("MongoDB Connected !!");
+      console.log(`Chat server running on port - ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Database cannot be connected !!", err);
+    console.error("Chat Server Error - ", err);
   });
