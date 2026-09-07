@@ -3,9 +3,10 @@ import proxy from "express-http-proxy";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { protect } from "./middlewares/auth.middleware";
-import { getCurrentUser } from "./controllers/user.controller";
 dotenv.config();
+
+import { getCurrentUser } from "./controllers/user.controller.js";
+import { protect } from "./middlewares/auth.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
