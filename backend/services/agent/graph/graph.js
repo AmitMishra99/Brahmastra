@@ -1,23 +1,23 @@
-const { StateGraph } = require("@langchain/langgraph");
+import { StateGraph } from "@langchain/langgraph";
+import agentState from "./state.js";
 
-const agentState = require("./state");
-const router = require("./router");
-const chatAgent = require("../agents/chat.agent");
-const searchAgent = require("../agents/search.agent");
-const codingAgent = require("../agents/coding.agent");
-const pdfAgent = require("../agents/pdf.agent");
-const pptAgent = require("../agents/ppt.agent");
-const vision = require("../agents/vision");
+import { routerAgent } from "../agents/router.agent.js";
+import { chatAgent } from "../agents/chat.agent.js";
+import { searchAgent } from "../agents/search.agent.js";
+import { codingAgent } from "../agents/coding.agent.js";
+import { pdfAgent } from "../agents/pdf.agent.js";
+import { pptAgent } from "../agents/ppt.agent.js";
+import { imageAgent } from "../agents/image.agent.js";
 
 const workFlow = new StateGraph(agentState);
 
-workFlow.addNode("router", router);
+workFlow.addNode("router", routerAgent);
 workFlow.addNode("chat", chatAgent);
 workFlow.addNode("search", searchAgent);
 workFlow.addNode("coding", codingAgent);
 workFlow.addNode("pdf", pdfAgent);
 workFlow.addNode("ppt", pptAgent);
-workFlow.addNode("vision", vision);
+workFlow.addNode("image", imageAgent);
 
 workFlow.addEdge("__start__", "router");
 
@@ -35,8 +35,8 @@ workFlow.addConditionalEdges(
         return "pdf";
       case "ppt":
         return "ppt";
-      case "vision":
-        return "vision";
+      case "image":
+        return "image";
       default:
         return "chat";
     }
@@ -47,7 +47,7 @@ workFlow.addConditionalEdges(
     coding: "coding",
     pdf: "pdf",
     ppt: "ppt",
-    vision: "vision",
+    image: "image",
   },
 );
 
@@ -61,5 +61,4 @@ workFlow.addEdge("ppt", "__end__");
 workFlow.addEdge("vision", "__end__");
 
 const graph = workFlow.compile();
-
-module.exports = graph;
+export default graph;

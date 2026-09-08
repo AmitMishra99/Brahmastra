@@ -1,2 +1,1 @@
-const pptAgent = async (req, res) => {};
-module.exports = pptAgent;
+export const pptAgent = async (req, res) => {};

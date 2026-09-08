@@ -1,22 +1,25 @@
-const express = require("express");
-const dotenv = require("dotenv");
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
 
-const connectDB = require("./config/connectDB");
-const app = express();
-app.use(express.json());
+import connectDB from "./config/connectDB.js";
+import agentRouter from "./routes/agent.route.js";
 
+const app = express();
+const PORT = process.env.PORT || 8003;
+
+app.use(express.json());
+app.use("/", agentRouter);
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Agent Server" });
 });
 
 connectDB()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log("Database connection Established !!");
-      console.log(`Agent server running on port - ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Agent server running on port - ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Database cannot be connected !!", err);
+    console.error("Agent Server Error - ", err);
   });

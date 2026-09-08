@@ -1,2 +1,1 @@
-const searchAgent = async (req, res) => {};
-module.exports = searchAgent;
+export const searchAgent = async (req, res) => {};

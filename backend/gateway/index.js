@@ -10,7 +10,7 @@ import { getCurrentUser } from "./controllers/user.controller.js";
 import { protect } from "./middlewares/auth.middleware.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,8 +21,9 @@ app.use(
   }),
 );
 
-app.use("/api/me", protect, getCurrentUser);
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
+app.use("/api/me", protect, getCurrentUser);
+app.use("/api/agent", protect, proxy(process.env.AGENT_SERVICE));
 app.use("/api/chat", protect, proxyWithHeader(process.env.CHAT_SERVICE));
 
 app.listen(PORT, () => {

@@ -1,4 +1,4 @@
-const { Annotation } = require("@langChain/langgraph");
+import { Annotation } from "@langchain/langgraph";
 
 const agentState = Annotation.Root({
   prompt: Annotation(),
@@ -7,4 +7,4 @@ const agentState = Annotation.Root({
   conversationID: Annotation(),
 });
 
-module.exports = agentState;
+export default agentState;

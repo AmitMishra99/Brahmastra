@@ -1,2 +1,1 @@
-const pdfAgent = async (req, res) => {};
-module.exports = pdfAgent;
+export const pdfAgent = async (req, res) => {};
