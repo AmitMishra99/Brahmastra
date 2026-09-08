@@ -17,7 +17,6 @@ app.get("/", (req, res) => {
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log("MongoDB Connected !!");
       console.log(`Chat server running on port - ${PORT}`);
     });
   })
