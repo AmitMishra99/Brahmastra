@@ -19,7 +19,6 @@ export const createConversation = async (req, res) => {
 export const getConversations = async (req, res) => {
   try {
     const userID = req.headers["x-user-id"];
-    console.log("userID : ", userID);
     const conversations = await Conversation.find({
       userID: userID,
     }).sort({ updatedAt: -1 });
