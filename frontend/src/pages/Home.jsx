@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../redux/userSlice";
 import SideBar from "../components/SideBar";
 import ChatArea from "../components/ChatArea";
-import Artifacts from "../components/Artifacts";
+// import Artifacts from "../components/Artifacts";
+
 const Home = () => {
   const { userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const Home = () => {
         <>
           <SideBar />
           <ChatArea />
-          <Artifacts />
+          {/* <Artifacts /> */}
         </>
       )}
       {!userData && (
