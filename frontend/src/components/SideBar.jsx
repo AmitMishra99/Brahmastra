@@ -1,22 +1,43 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PanelLeftIcon, PenSquare, Plus } from "lucide-react";
+import {
+  Coins,
+  LogOut,
+  MessageSquare,
+  PanelLeftIcon,
+  PanelRight,
+  PenSquare,
+  Plus,
+  User,
+} from "lucide-react";
 
 import { getConversations } from "../apis/getConversations";
 import { createConversation } from "../apis/createConversation";
 import {
   addConversation,
   setConversations,
+  setSelectedConversation,
 } from "../../redux/conversationSlice";
+import { logout } from "../apis/logout";
+import { setUserData } from "../../redux/userSlice";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const dispatch = useDispatch();
-  const { conversations } = useSelector((state) => state.conversation);
+  const { conversations, selectedConversation } = useSelector(
+    (state) => state.conversation,
+  );
+  const { userData } = useSelector((state) => state.user);
 
   const handleCreateConversation = async () => {
     const data = await createConversation();
     dispatch(addConversation(data));
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    dispatch(setUserData(null));
   };
 
   useEffect(() => {
@@ -26,6 +47,58 @@ const SideBar = () => {
     };
     getConvs();
   }, []);
+
+  if (collapsed) {
+    return (
+      <div className="hidden lg:flex flex-col items-center w-[56px] h-screen bg-[#0d0f14] border-r border-white/[0.06] py-4 gap-1 shrink-0 ">
+        <button
+          className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer mb-1 "
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          <PanelRight />
+        </button>
+        <button
+          className="flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+          onClick={handleCreateConversation}
+        >
+          <Plus size={17} />
+        </button>
+        <div className="flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-5">
+          {conversations.map((conv, idx) => {
+            const isActive = selectedConversation?._id == conv._id;
+            return (
+              <div
+                onClick={() => dispatch(setSelectedConversation(conv))}
+                className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5 rounded-[10px] border transition-colors duration-150 
+              ${isActive ? "bg-indigo-500/10 border-indigo-500/[0.18] " : "bg-transparent border-transparent"} `}
+              >
+                <div
+                  className={`flex items-center justify-center shrink-0 w-[20px] h-[20px] rounded-lg transition-colors duration-150 
+              ${isActive ? "bg-indigo-500/15 text-indigo-400 " : "bg-white/[0.05] text-slate-500"} `}
+                >
+                  <MessageSquare size={13} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="relative shrink-0">
+          {userData?.avatar && !imageError ? (
+            <img
+              className="w-9 h-9 rounded-[20px] object-cover border-2 border-indigo-500/25"
+              src={userData?.avatar}
+              alt={userData.name}
+              onError={() => setImageError(!imageError)}
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center">
+              <User size={15} className="text-slate-400" />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fiexed lg:static inset-y-0 keft-0 z-50 w-[270px] h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06]">
@@ -71,8 +144,77 @@ const SideBar = () => {
             Recents
           </div>
         )}
+        {/* Mapping of coversations that users has */}
         <div className="flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ">
-          // Mapping of coversations that users has
+          {conversations.map((conv, idx) => {
+            const isActive = selectedConversation?._id == conv._id;
+            return (
+              <div
+                onClick={() => dispatch(setSelectedConversation(conv))}
+                className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5 rounded-[10px] border transition-colors duration-150 
+              ${isActive ? "bg-indigo-500/10 border-indigo-500/[0.18] " : "bg-transparent border-transparent"} `}
+              >
+                <div
+                  className={`flex items-center justify-center shrink-0 w-[28px] h-[28px] rounded-lg transition-colors duration-150 
+              ${isActive ? "bg-indigo-500/15 text-indigo-400 " : "bg-white/[0.05] text-slate-500"} `}
+                >
+                  <MessageSquare size={13} />
+                </div>
+                <span
+                  className={`text-[13px] font-medium truncate ${isActive ? "text-slate-100" : "text-slate-300"}`}
+                >
+                  {conv?.title}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer Section */}
+        <div className="mx-2.5 h-px bg-white/[0.06]" />
+
+        <div className="px-3.5 py-3.5">
+          {userData ? (
+            <div className="flex items-enter gap-2.5 cursor-pointer rounded-xl px-3 py-2.5 hover:bg-white/[0.05] trasititon-colors duration-150 ">
+              <div className="relative shrink-0">
+                {userData?.avatar && !imageError ? (
+                  <img
+                    className="w-9 h-9 rounded-[20px] object-cover border-2 border-indigo-500/25"
+                    src={userData?.avatar}
+                    alt={userData.name}
+                    onError={() => setImageError(!imageError)}
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center">
+                    <User size={15} className="text-slate-400" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13.5px] font-semibold text-slate-100 truncate">
+                  {userData?.name || "userName"}
+                </p>
+                <p className="text-[11px] text-slate-600 mt-px">
+                  {"Free Plan"}
+                </p>
+              </div>
+              <div className="flex gap-1">
+                <button className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150 ">
+                  <Coins size={16} />
+                </button>
+                <button
+                  className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-slate-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150 "
+                  onClick={handleLogout}
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-200 bg-white/[0.05] border border-white/[0.08] rounded-xl py-[11px] cursor-pointer hover:bg-white/[0.08] transition-colors duration-150 ">
+              Login
+            </button>
+          )}
         </div>
       </div>
     </div>
