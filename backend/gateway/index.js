@@ -2,6 +2,7 @@ import express from "express";
 import proxy from "express-http-proxy";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,6 +13,7 @@ import { protect } from "./middlewares/auth.middleware.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(
   cors({
