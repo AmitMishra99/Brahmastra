@@ -4,19 +4,17 @@ import MessageList from "./ChatArea/MessageList";
 import Nav from "./ChatArea/Nav";
 import { getMessages } from "../apis/getMessages";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessages } from "../../redux/messageSlice";
+import { setMessages } from "../../redux/messageSlice";
 
 const ChatArea = () => {
   const { selectedConversation } = useSelector((state) => state.conversation);
   const dispatch = useDispatch();
-  console.log(selectedConversation?._id);
 
   useEffect(() => {
     const getMessagesList = async () => {
       if (selectedConversation) {
         const data = await getMessages(selectedConversation?._id);
-        console.log(data);
-        dispatch(addMessages(data));
+        dispatch(setMessages(data));
       }
     };
     getMessagesList();
@@ -26,7 +24,7 @@ const ChatArea = () => {
     <div className="flex-1 flex flex-col">
       <Nav />
       <MessageList />
-      <ChatInput />
+      { selectedConversation && <ChatInput/>}
     </div>
   );
 };

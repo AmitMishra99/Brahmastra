@@ -163,7 +163,7 @@ const SideBar = () => {
                 <span
                   className={`text-[13px] font-medium truncate ${isActive ? "text-slate-100" : "text-slate-300"}`}
                 >
-                  {conv?.title}
+                  {conv?.title || "New Title"}
                 </span>
               </div>
             );
