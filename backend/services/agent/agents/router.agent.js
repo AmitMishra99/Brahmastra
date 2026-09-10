@@ -1,4 +1,4 @@
-import { getModels } from "../config/llmmodels";
+import { getModels } from "../config/llmmodels.js";
 
 export const routerAgent = async (state) => {
   try {
@@ -8,7 +8,7 @@ export const routerAgent = async (state) => {
   User Query: ${state.prompt}`;
 
     const response = await llm.invoke(prompt);
-    console.log("Router Agent Response - ", response);
+
     return {
       ...state,
       agent: response.text.trim().toLowerCase(),

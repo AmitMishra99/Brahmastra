@@ -58,7 +58,7 @@ workFlow.addEdge("chat", "__end__");
 workFlow.addEdge("coding", "__end__");
 workFlow.addEdge("pdf", "__end__");
 workFlow.addEdge("ppt", "__end__");
-workFlow.addEdge("vision", "__end__");
+workFlow.addEdge("image", "__end__");
 
 const graph = workFlow.compile();
 export default graph;

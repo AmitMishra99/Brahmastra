@@ -11,7 +11,7 @@ import {
 chatRouter.get("/create-conversation", createConversation);
 chatRouter.get("/get-conversations", getConversations);
 chatRouter.get("/update-conversation", updateConversation);
-chatRouter.get("/save-message", saveMessage);
+chatRouter.post("/save-message", saveMessage);
 chatRouter.get("/get-messages/:conversationId", getMessages);
 
 export default chatRouter;

@@ -4,7 +4,6 @@ import Conversation from "../models/conversation.model.js";
 export const createConversation = async (req, res) => {
   try {
     const userID = req.headers["x-user-id"];
-    console.log("userID : ", userID);
     const conversation = await Conversation.create({
       userID: userID,
     });
@@ -54,7 +53,7 @@ export const saveMessage = async (req, res) => {
     });
     return res.status(200).json(message);
   } catch (e) {
-    return res.status(500).json({ message: `create message error - ${e}` });
+    return res.status(500).json({ message: `save message error - ${e}` });
   }
 };
 
@@ -63,7 +62,7 @@ export const getMessages = async (req, res) => {
     const { conversationID } = req.params;
     const messages = await Message.find({
       conversationID,
-    }).sort({ createdAt: -1 });
+    });
     return res.status(200).json(messages);
   } catch (e) {
     return res.status(500).json({ message: `get messages error - ${e}` });
