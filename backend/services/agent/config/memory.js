@@ -15,15 +15,19 @@ export const getMemory = async (conversationID) => {
 };
 
 export const addMessages = async (conversationID, role, content) => {
-  const key = `messages-${conversationID}`;
-  const rawMessages = await redis.get(key);
-  const messages = rawMessages ? JSON.parse(rawMessages) : [];
-  messages.push({
-    role,
-    content,
-  });
-  if (messages.length > 20) {
-    messages.shift();
+  try {
+    const key = `messages-${conversationID}`;
+    const rawMessages = await redis.get(key);
+    const messages = rawMessages ? JSON.parse(rawMessages) : [];
+    messages.push({
+      role,
+      content,
+    });
+    if (messages.length > 20) {
+      messages.shift();
+    }
+    await redis.set(key, JSON.stringify(messages));
+  } catch (error) {
+    console.log("addMessage error - ", error);
   }
-  await redis.set(key, JSON.stringify(messages));
 };
