@@ -1,5 +1,7 @@
 import axios from "axios";
 import graph from "../graph/graph.js";
+import { addMessages } from "../config/memory.js";
+import redis from "../../../shared/redis/redis.js";
 
 export const agent = async (req, res) => {
   try {
@@ -21,6 +23,9 @@ export const agent = async (req, res) => {
       content: result.aiResponse,
       role: "assistant",
     });
+
+    await addMessages(conversationID, "user", prompt);
+    await addMessages(conversationID, "assistant", result.aiResponse);
 
     return res.status(200).json({
       response: result.aiResponse,
