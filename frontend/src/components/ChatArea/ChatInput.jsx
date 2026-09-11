@@ -15,7 +15,7 @@ const ChatInput = () => {
       conversationID: selectedConversation?._id,
     };
     dispatch(addMessage({ role: "user", content: value }));
-    setValue(" ");
+    setValue("");
     const data = await sendMessage(payload);
     dispatch(addMessage({ role: "assistant", content: data?.data?.response }));
   };

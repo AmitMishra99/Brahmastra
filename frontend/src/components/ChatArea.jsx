@@ -24,7 +24,7 @@ const ChatArea = () => {
     <div className="flex-1 flex flex-col">
       <Nav />
       <MessageList />
-      { selectedConversation && <ChatInput/>}
+      <ChatInput/>
     </div>
   );
 };
