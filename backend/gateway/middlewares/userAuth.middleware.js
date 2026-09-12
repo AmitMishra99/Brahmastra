@@ -1,6 +1,6 @@
 import redisClient from "../../shared/redis/redis.js";
 
-export const protect = async (req, res, next) => {
+export const userAuth = async (req, res, next) => {
   try {
     const sessionID = req.cookies?.session;
     if (!sessionID)
@@ -15,6 +15,6 @@ export const protect = async (req, res, next) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: `Protect middleware error -`, error });
+      .json({ message: `userAuth middleware error -`, error });
   }
 };

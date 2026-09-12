@@ -8,7 +8,7 @@ dotenv.config();
 
 import proxyWithHeader from "./utils/proxyWithHeaders.js";
 import { getCurrentUser } from "./controllers/user.controller.js";
-import { protect } from "./middlewares/auth.middleware.js";
+import { userAuth } from "./middlewares/userAuth.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -23,9 +23,9 @@ app.use(
 );
 
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
-app.use("/api/me", protect, getCurrentUser);
-app.use("/api/agent", protect, proxy(process.env.AGENT_SERVICE));
-app.use("/api/chat", protect, proxyWithHeader(process.env.CHAT_SERVICE));
+app.use("/api/me", userAuth, getCurrentUser);
+app.use("/api/agent", userAuth, proxy(process.env.AGENT_SERVICE));
+app.use("/api/chat", userAuth, proxyWithHeader(process.env.CHAT_SERVICE));
 
 app.listen(PORT, () => {
   console.log(`Gateway Server is listening on ${PORT}`);
