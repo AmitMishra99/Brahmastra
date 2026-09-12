@@ -17,9 +17,9 @@ import {
   addConversation,
   setConversations,
   setSelectedConversation,
-} from "../../redux/conversationSlice";
+} from "../redux/conversationSlice";
 import { logout } from "../apis/logout";
-import { setUserData } from "../../redux/userSlice";
+import { setUserData } from "../redux/userSlice";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(false);

@@ -2,7 +2,7 @@ import { Mic, Paperclip, Send } from "lucide-react";
 import { useState } from "react";
 import { sendMessage } from "../../apis/sendMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessage } from "../../../redux/messageSlice";
+import { addMessage } from "../../redux/messageSlice";
 
 const ChatInput = () => {
   const [value, setValue] = useState("");

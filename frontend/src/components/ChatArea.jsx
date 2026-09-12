@@ -4,7 +4,7 @@ import MessageList from "./ChatArea/MessageList";
 import Nav from "./ChatArea/Nav";
 import { getMessages } from "../apis/getMessages";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessages } from "../../redux/messageSlice";
+import { setMessages } from "../redux/messageSlice";
 
 const ChatArea = () => {
   const { selectedConversation } = useSelector((state) => state.conversation);

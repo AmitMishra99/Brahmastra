@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import getCurrentUser from "./apis/getCurrentUser";
-import { setUserData } from "../redux/userSlice";
+import { setUserData } from "./redux/userSlice";
 import { useDispatch } from "react-redux";
 
 const App = () => {

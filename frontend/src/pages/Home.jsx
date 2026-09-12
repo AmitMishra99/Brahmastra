@@ -3,7 +3,7 @@ import { auth, googleProvider } from "../utils/firebase";
 import api from "../utils/axios";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../../redux/userSlice";
+import { setUserData } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
 import ChatArea from "../components/ChatArea";
 
