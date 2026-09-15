@@ -6,18 +6,15 @@ import connectDB from "./config/connectDB.js";
 import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
-const PORT = process.env.PORT;
+const port = process.env.PORT || 9002;
 
 app.use(express.json());
 app.use("/", chatRouter);
-app.get("/", (req, res) => {
-  res.send({ message: "Chat Server" });
-});
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Chat server running on port - ${PORT}`);
+    app.listen(port, () => {
+      console.log(`Chat server running on port - ${port}`);
     });
   })
   .catch((err) => {

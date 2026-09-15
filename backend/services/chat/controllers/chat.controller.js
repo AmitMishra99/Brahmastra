@@ -3,11 +3,13 @@ import Conversation from "../models/conversation.model.js";
 
 export const createConversation = async (req, res) => {
   try {
-    const userID = req.headers["x-user-id"];
+    const userId = req.headers["x-user-id"];
     const conversation = await Conversation.create({
-      userID: userID,
+      userId: userId,
     });
-    return res.status(200).json({ message: "conversation created" });
+    return res
+      .status(200)
+      .json({ message: `conversation created - ${conversation}` });
   } catch (error) {
     return res
       .status(500)
@@ -17,9 +19,9 @@ export const createConversation = async (req, res) => {
 
 export const getConversations = async (req, res) => {
   try {
-    const userID = req.headers["x-user-id"];
+    const userId = req.headers["x-user-id"];
     const conversations = await Conversation.find({
-      userID: userID,
+      userId: userId,
     }).sort({ updatedAt: -1 });
     return res.status(200).json({ message: conversations });
   } catch (error) {
@@ -29,25 +31,13 @@ export const getConversations = async (req, res) => {
   }
 };
 
-export const updateConversation = async (req, res) => {
+export const createMessage = async (req, res) => {
   try {
-    const { id, title } = req.body;
-    const conversation = await Conversation.findByIdAndUpdate(id, {
-      title,
-    });
-    return res.status(200).json({ message: conversation });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "update conversation error - ", error });
-  }
-};
-
-export const saveMessage = async (req, res) => {
-  try {
-    const { conversationID, role, content } = req.body;
+    const { conversationId, role, content } = req.body;
+    if (!conversationId)
+      return res.status(500).json({ message: "conversationId not found !!" });
     const message = await Message.create({
-      conversationID,
+      conversationId,
       content,
       role,
     });
@@ -59,12 +49,25 @@ export const saveMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    const { conversationID } = req.params;
     const messages = await Message.find({
-      conversationID,
+      conversationId: req.params.conversationId,
     });
     return res.status(200).json(messages);
   } catch (e) {
     return res.status(500).json({ message: `get messages error - ${e}` });
+  }
+};
+
+export const updateConversationTitle = async (req, res) => {
+  try {
+    const { conversationId, title } = req.body;
+    const updatedTiltle = await Conversation.findByIdAndUpdate(conversationId, {
+      title,
+    });
+    return res.status(200).json({ message: updatedTiltle });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "update conversation title error - ", error });
   }
 };
