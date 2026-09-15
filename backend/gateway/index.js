@@ -2,7 +2,6 @@ import express from "express";
 import proxy from "express-http-proxy";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,9 +10,8 @@ import { getCurrentUser } from "./controllers/user.controller.js";
 import { userAuth } from "./middlewares/userAuth.middleware.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const port = process.env.PORT || 9000;
 
-app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(
   cors({
@@ -22,11 +20,11 @@ app.use(
   }),
 );
 
-app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
 app.use("/api/me", userAuth, getCurrentUser);
+app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
 app.use("/api/agent", userAuth, proxy(process.env.AGENT_SERVICE));
 app.use("/api/chat", userAuth, proxyWithHeader(process.env.CHAT_SERVICE));
 
-app.listen(PORT, () => {
-  console.log(`Gateway Server is listening on ${PORT}`);
+app.listen(port, () => {
+  console.log(`Gateway Server is listening on ${port}`);
 });

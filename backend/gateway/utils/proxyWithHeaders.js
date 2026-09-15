@@ -1,9 +1,9 @@
 import proxy from "express-http-proxy";
 
-const proxyWithHeader = (serviceURL) => {
-  return proxy(serviceURL, {
+const proxyWithHeader = (serviceUrl) => {
+  return proxy(serviceUrl, {
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-      if (srcReq) proxyReqOpts.headers["x-user-id"] = srcReq.user.userID;
+      if (srcReq) proxyReqOpts.headers["x-user-id"] = srcReq.user.userId;
       return proxyReqOpts;
     },
   });
