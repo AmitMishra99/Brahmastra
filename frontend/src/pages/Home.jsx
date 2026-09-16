@@ -1,30 +1,22 @@
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../utils/firebase";
-import api from "../utils/axios";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
 import ChatArea from "../components/ChatArea";
+import { handleLogin } from "../apis/handleLogin";
+import { setUserData } from "../redux/userSlice";
 
 const Home = () => {
   const { userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const handleLogin = async (token) => {
-    try {
-      const data = await api.post("/api/auth/login", { token });
-      dispatch(setUserData(data.data));
-    } catch (e) {
-      console.log("handleLogin Error- ", e);
-    }
-  };
-
   const googleLogin = async () => {
     try {
       const data = await signInWithPopup(auth, googleProvider);
       const token = await data.user.getIdToken();
-      await handleLogin(token);
+      const userData = await handleLogin(token);
+      dispatch(setUserData(userData));
     } catch (error) {
       console.log("Google Loign Error - ", error);
     }

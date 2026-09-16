@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
-import getCurrentUser from "./apis/getCurrentUser";
+import handleUser from "./apis/handleUser";
 import { setUserData } from "./redux/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -11,7 +11,7 @@ const App = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const data = await getCurrentUser();
+        const data = await handleUser();
         dispatch(setUserData(data));
       } catch (error) {
         console.log("Auth restore error:", error);
