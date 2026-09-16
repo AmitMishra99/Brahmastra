@@ -7,9 +7,7 @@ export const createConversation = async (req, res) => {
     const conversation = await Conversation.create({
       userId: userId,
     });
-    return res
-      .status(200)
-      .json({ message: `conversation created - ${conversation}` });
+    return res.status(200).json({ message: conversation });
   } catch (error) {
     return res
       .status(500)
