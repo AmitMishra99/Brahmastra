@@ -1,31 +1,32 @@
 import axios from "axios";
-import graph from "../graph/graph.js";
+import graph from "../langGraph/graph.js";
 import { addMessages } from "../config/memory.js";
-import redis from "../../../shared/redis/redis.js";
 
 export const agent = async (req, res) => {
   try {
-    const { prompt, conversationID } = req.body;
-
-    await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
-      conversationID,
-      content: prompt,
-      role: "user",
-    });
+    const { prompt, conversationId } = req.body;
 
     const result = await graph.invoke({
       prompt,
-      conversationID,
+      conversationId,
     });
 
-    await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
-      conversationID,
-      content: result.aiResponse,
+    const response = result.aiResponse;
+
+    await addMessages(conversationId, "user", prompt);
+    await addMessages(conversationId, "assistant", response);
+
+    await axios.post(`${process.env.CHAT_SERVICE}/create-message`, {
+      conversationId,
+      role: "user",
+      content: prompt,
+    });
+
+    await axios.post(`${process.env.CHAT_SERVICE}/create-message`, {
+      conversationId,
       role: "assistant",
+      content: response,
     });
-
-    await addMessages(conversationID, "user", prompt);
-    await addMessages(conversationID, "assistant", result.aiResponse);
 
     return res.status(200).json({
       response: result.aiResponse,

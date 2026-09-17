@@ -12,7 +12,7 @@ const gemini = new ChatGoogle({
   model: "gemini-2.5-flash",
 });
 
-export const getModels = (agent) => {
+export const getModel = (agent) => {
   switch (agent) {
     case "chat":
       return groq;

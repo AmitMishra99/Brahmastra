@@ -1,5 +1,5 @@
 import { StateGraph } from "@langchain/langgraph";
-import agentState from "./state.js";
+import { agentState } from "./state.js";
 
 import { routerAgent } from "../agents/router.agent.js";
 import { chatAgent } from "../agents/chat.agent.js";
@@ -51,7 +51,6 @@ workFlow.addConditionalEdges(
   },
 );
 
-// Especial Case
 workFlow.addEdge("search", "chat");
 
 workFlow.addEdge("chat", "__end__");
