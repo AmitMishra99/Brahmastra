@@ -3,21 +3,72 @@ import { useState } from "react";
 import { createMessage } from "../../apis/createMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../../redux/messageSlice";
+import { createConversation } from "../../apis/createConversation";
+import {
+  addConversation,
+  setConvTitle,
+  setIsNewConversation,
+  setSelectedConversation,
+} from "../../redux/conversationSlice";
+import { updateConversationTitle } from "../../apis/updateConversationTitle";
 
 const ChatInput = () => {
   const [value, setValue] = useState("");
-  const { selectedConversation } = useSelector((state) => state.conversation);
+  const { selectedConversation, isNewConversation } = useSelector(
+    (state) => state.conversation,
+  );
   const dispatch = useDispatch();
 
   const handleCreateMessage = async () => {
-    const payload = {
-      prompt: value.trim(),
-      conversationId: selectedConversation?._id,
-    };
-    dispatch(addMessage({ role: "user", content: value }));
+    const prompt = value.trim();
+    if (!prompt) return;
+
+    let conversation = selectedConversation;
+
+    if (!conversation) {
+      conversation = await createConversation();
+
+      dispatch(addConversation(conversation));
+      dispatch(setSelectedConversation(conversation));
+      dispatch(setIsNewConversation(true));
+    }
+
+    if (isNewConversation || !selectedConversation) {
+      const updatedTitle = await updateConversationTitle({
+        id: conversation._id,
+        title: prompt,
+      });
+
+      dispatch(
+        setConvTitle({
+          conversationId: conversation._id,
+          title: updatedTitle?.title,
+        }),
+      );
+
+      dispatch(setIsNewConversation(false));
+    }
+
+    dispatch(
+      addMessage({
+        role: "user",
+        content: prompt,
+      }),
+    );
+
     setValue("");
-    const data = await createMessage(payload);
-    dispatch(addMessage({ role: "assistant", content: data.response }));
+
+    const data = await createMessage({
+      prompt,
+      conversationId: conversation._id,
+    });
+
+    dispatch(
+      addMessage({
+        role: "assistant",
+        content: data.response,
+      }),
+    );
   };
 
   return (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   addConversation,
   setConversations,
+  setIsNewConversation,
   setSelectedConversation,
 } from "../redux/conversationSlice";
 
@@ -38,9 +39,12 @@ const SideBar = () => {
 
   const handleCreateConversation = async () => {
     const data = await createConversation();
+
     dispatch(addConversation(data));
     dispatch(setSelectedConversation(data));
+    dispatch(setIsNewConversation(true));
   };
+
   const handleLogout = async () => {
     await logout();
     dispatch(setUserData(null));
