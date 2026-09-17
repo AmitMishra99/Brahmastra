@@ -13,16 +13,18 @@ const app = express();
 const port = process.env.PORT || 9000;
 
 app.use(cookieParser());
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   }),
 );
 
 app.use("/api/me", userAuth, getCurrentUser);
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
-app.use("/api/agent", userAuth, proxy(process.env.AGENT_SERVICE));
+app.use("/api/agent", userAuth, proxyWithHeader(process.env.AGENT_SERVICE));
 app.use("/api/chat", userAuth, proxyWithHeader(process.env.CHAT_SERVICE));
 
 app.listen(port, () => {

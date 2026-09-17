@@ -58,14 +58,20 @@ export const getMessages = async (req, res) => {
 
 export const updateConversationTitle = async (req, res) => {
   try {
-    const { conversationId, title } = req.body;
-    const updatedTiltle = await Conversation.findByIdAndUpdate(conversationId, {
-      title,
-    });
-    return res.status(200).json({ message: updatedTiltle });
+    const { id, title } = req.body;
+    const conversation = await Conversation.findByIdAndUpdate(
+      id,
+      { title },
+      { new: true },
+    );
+    if (!conversation) {
+      return res.status(404).json({
+        message: "Conversation not found",
+      });
+    }
+
+    res.status(200).json(conversation);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "update conversation title error - ", error });
+    res.status(500).json({ message: error.message });
   }
 };
