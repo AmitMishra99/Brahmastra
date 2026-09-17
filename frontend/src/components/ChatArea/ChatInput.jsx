@@ -1,6 +1,6 @@
 import { Mic, Paperclip, Send } from "lucide-react";
 import { useState } from "react";
-import { sendMessage } from "../../apis/sendMessage";
+import { createMessage } from "../../apis/createMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../../redux/messageSlice";
 
@@ -9,15 +9,15 @@ const ChatInput = () => {
   const { selectedConversation } = useSelector((state) => state.conversation);
   const dispatch = useDispatch();
 
-  const handleSendMessage = async () => {
+  const handleCreateMessage = async () => {
     const payload = {
-      prompt: value,
-      conversationID: selectedConversation?._id,
+      prompt: value.trim(),
+      conversationId: selectedConversation?._id,
     };
     dispatch(addMessage({ role: "user", content: value }));
     setValue("");
-    const data = await sendMessage(payload);
-    dispatch(addMessage({ role: "assistant", content: data?.data?.response }));
+    const data = await createMessage(payload);
+    dispatch(addMessage({ role: "assistant", content: data.response }));
   };
 
   return (
@@ -41,7 +41,7 @@ const ChatInput = () => {
           </div>
           <button
             disabled={!value}
-            onClick={handleSendMessage}
+            onClick={handleCreateMessage}
             className={`flex items-center justify-center w-8 h-8 rounded-lg border-none cursor-pointer transition-all duration-150 ${value.trim() ? "bg-linear-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white" : "bg-white/[0.05] text-slate-600 cursor-not-allowed "} `}
           >
             <Send size={15} />

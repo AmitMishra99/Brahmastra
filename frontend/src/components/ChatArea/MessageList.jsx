@@ -4,7 +4,7 @@ import MessageBubble from "./MessageBubble";
 const MessageList = () => {
   const { selectedConversation } = useSelector((state) => state.conversation);
   const { messages } = useSelector((state) => state.message);
-  
+
   return (
     <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 [scrollbar-width-none] [&::-webkit-scrollbar]:hidden ">
       {!selectedConversation ? (
@@ -26,8 +26,11 @@ const MessageList = () => {
               "Build a NetFlix Clone",
               "Explain Redis",
               "Build a dashboard",
-            ].map((s) => (
-              <button className="text-[12px] text-slate-400 bg-white/[0.04] border border-white/[0.07] px-3 py-1.5 rounded-lg hover:bg-white/[0.08] hover:text-slate-200 transition-colors duration-150 cursor-pointer">
+            ].map((s, idx) => (
+              <button
+                key={idx}
+                className="text-[12px] text-slate-400 bg-white/[0.04] border border-white/[0.07] px-3 py-1.5 rounded-lg hover:bg-white/[0.08] hover:text-slate-200 transition-colors duration-150 cursor-pointer"
+              >
                 {s}
               </button>
             ))}
@@ -35,8 +38,8 @@ const MessageList = () => {
         </div>
       ) : (
         <div>
-          {messages?.map((msg, idx) => (
-            <div key={idx}>
+          {messages?.map((msg) => (
+            <div key={msg._id}>
               <MessageBubble role={msg?.role} content={msg?.content} />
             </div>
           ))}
