@@ -31,13 +31,14 @@ export const getConversations = async (req, res) => {
 
 export const createMessage = async (req, res) => {
   try {
-    const { conversationId, role, content } = req.body;
+    const { conversationId, role, content, images } = req.body;
     if (!conversationId)
       return res.status(500).json({ message: "conversationId not found !!" });
     const message = await Message.create({
       conversationId,
       content,
       role,
+      images,
     });
     return res.status(200).json(message);
   } catch (e) {
