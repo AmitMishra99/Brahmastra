@@ -4,11 +4,12 @@ import { addMessages } from "../config/memory.js";
 
 export const agent = async (req, res) => {
   try {
-    const { prompt, conversationId } = req.body;
+    const { prompt, conversationId, agent } = req.body;
 
     const result = await graph.invoke({
       prompt,
       conversationId,
+      agent,
     });
 
     const response = result.aiResponse;
@@ -26,10 +27,12 @@ export const agent = async (req, res) => {
       conversationId,
       role: "assistant",
       content: response,
+      images: result.images,
     });
 
     return res.status(200).json({
       response: result.aiResponse,
+      images: result.images,
     });
   } catch (e) {
     console.error("Error in agent controller:", e);
