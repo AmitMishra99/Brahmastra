@@ -36,6 +36,8 @@ export const getModel = (agent) => {
   switch (agent) {
     case "chat":
       return groq;
+    case "coding":
+      return groq;
     case "search":
       return groq;
     case "ppt":

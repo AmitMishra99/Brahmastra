@@ -18,9 +18,15 @@ export const chatAgent = async (state) => {
       Use provided web search results for current information. If insufficient, say so.
 `;
   const messages = [new SystemMessage(systemPrompt)];
+  
   history.forEach((msg) => {
     if (msg.role == "user") messages.push(new HumanMessage(msg.content));
-    if (msg.role == "assistant") messages.push(new AIMessage(msg.content));
+    if (msg.role == "assistant")
+      messages.push(
+        new AIMessage({
+          content: msg.content,
+        }),
+      );
   });
 
   if (state.searchResults?.length > 0) {
