@@ -1,8 +1,6 @@
 import { ChatGroq } from "@langchain/groq";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatAnthropic } from "@langchain/anthropic";
-import { ChatDeepSeek } from "@langchain/deepseek";
+import { ChatOpenRouter } from "@langchain/openrouter";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -10,44 +8,32 @@ dotenv.config();
 const groq = new ChatGroq({
   apiKey: process.env.GROQ_API_KEY,
   model: "openai/gpt-oss-120b",
+  temperature: 0,
+  maxTokens: 1024,
 });
 
 const gemini = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   model: "gemini-3.6-flash",
+  temperature: 0,
+  maxTokens: 1024,
 });
 
-const openai = new ChatOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  model: "gpt-5-mini",
-});
-
-const claude = new ChatAnthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  model: "claude-sonnet-4-5-20250929",
-});
-
-const deepseek = new ChatDeepSeek({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  model: "deepseek-chat",
+const deepseek = new ChatOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  model: "anthropic/claude-sonnet-4.5",
+  temperature: 0,
+  maxTokens: 1024,
 });
 
 export const getModel = (agent) => {
   switch (agent) {
     case "chat":
       return groq;
-    case "coding":
-      return groq;
     case "search":
       return groq;
-    case "ppt":
-      return gemini;
-    case "image":
-      return gemini;
-    case "ppt":
-      return gemini;
-    case "image":
-      return gemini;
+    case "coding":
+      return deepseek;
     default:
       return groq;
   }
