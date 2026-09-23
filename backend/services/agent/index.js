@@ -4,12 +4,14 @@ dotenv.config();
 
 import connectDB from "./config/connectDB.js";
 import agentRouter from "./routes/agent.route.js";
+import routerRoutes from "./routes/router.route.js";
 
 const app = express();
 const port = process.env.PORT || 9003;
 
 app.use(express.json());
 app.use("/", agentRouter);
+app.use("/", routerRoutes);
 
 connectDB()
   .then(() => {

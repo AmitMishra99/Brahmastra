@@ -12,6 +12,12 @@ export const agent = async (req, res) => {
       agent,
     });
 
+    await axios.post(`${process.env.AGENT_SERVICE}/save-agent`, {
+      prompt,
+      conversationId,
+      agent: result.agent,
+    });
+
     const response = result.aiResponse;
 
     await addMessages(conversationId, "user", prompt);

@@ -12,6 +12,12 @@ export const searchAgent = async (state) => {
       images: results?.images || [],
     };
   } catch (error) {
-    console.log("Backend - agents - searchAgent error ", error);
+    console.log("Backend - agents - searchAgent error:", error);
+
+    return {
+      ...state,
+      searchResults: [],
+      images: [],
+    };
   }
 };
