@@ -12,10 +12,11 @@ import {
 } from "../../redux/conversationSlice";
 import { updateConversationTitle } from "../../apis/updateConversationTitle";
 import { agents } from "../../utils/agents";
+import { getAgent } from "../../apis/getAgent";
 
 const ChatInput = () => {
   const [value, setValue] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState("Auto");
+  const [selectedAgent, setSelectedAgent] = useState("auto");
 
   const { selectedConversation, isNewConversation } = useSelector(
     (state) => state.conversation,
@@ -64,8 +65,16 @@ const ChatInput = () => {
     const data = await createMessage({
       prompt,
       conversationId: conversation._id,
-      agent: selectedAgent.toLocaleLowerCase(),
+      agent: selectedAgent,
     });
+
+    if (isNewConversation) {
+      const res = await getAgent(conversation._id);
+      const agent = agents.find((item) => item.id === res?.agent);
+      if (agent) {
+        setSelectedAgent(agent.id);
+      }
+    }
 
     dispatch(
       addMessage({
@@ -81,12 +90,12 @@ const ChatInput = () => {
       <div className="flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3 ">
         <div className="flex w-[80%] gap-2 pr-2 flex-wrap">
           {agents.map((agent) => {
-            const isActive = selectedAgent === agent.label;
+            const isActive = selectedAgent === agent.id;
             const Icon = agent.icon;
             return (
               <div
                 key={agent.id}
-                onClick={() => setSelectedAgent(agent.label)}
+                onClick={() => setSelectedAgent(agent.id)}
                 className={`flex-shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border transition-all ${
                   isActive
                     ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)] "
