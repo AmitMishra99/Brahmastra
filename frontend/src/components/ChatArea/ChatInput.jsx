@@ -1,5 +1,5 @@
 import { Mic, Paperclip, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createMessage } from "../../apis/createMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../../redux/messageSlice";
@@ -12,16 +12,24 @@ import {
 } from "../../redux/conversationSlice";
 import { updateConversationTitle } from "../../apis/updateConversationTitle";
 import { agents } from "../../utils/agents";
-import { getAgent } from "../../apis/getAgent";
 
 const ChatInput = () => {
   const [value, setValue] = useState("");
   const [selectedAgent, setSelectedAgent] = useState("auto");
+  const dispatch = useDispatch();
 
   const { selectedConversation, isNewConversation } = useSelector(
     (state) => state.conversation,
   );
-  const dispatch = useDispatch();
+  const { messages } = useSelector((state) => state.message);
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage?.agent) {
+      setSelectedAgent(lastMessage.agent);
+    }
+  }, [messages]);
 
   const handleCreateMessage = async () => {
     const prompt = value.trim();
@@ -57,6 +65,7 @@ const ChatInput = () => {
       addMessage({
         role: "user",
         content: prompt,
+        agent: selectedAgent,
       }),
     );
 
@@ -68,12 +77,8 @@ const ChatInput = () => {
       agent: selectedAgent,
     });
 
-    if (isNewConversation) {
-      const res = await getAgent(conversation._id);
-      const agent = agents.find((item) => item.id === res?.agent);
-      if (agent) {
-        setSelectedAgent(agent.id);
-      }
+    if (data?.agent) {
+      setSelectedAgent(data.agent);
     }
 
     dispatch(
@@ -81,13 +86,14 @@ const ChatInput = () => {
         role: "assistant",
         content: data?.response,
         images: data?.images,
+        agent: data?.agent,
       }),
     );
   };
 
   return (
     <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/[0.06] bg-[#0d0f14]">
-      <div className="flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3 ">
+      <div className="flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3">
         <div className="flex w-[80%] gap-2 pr-2 flex-wrap">
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.id;
@@ -98,7 +104,7 @@ const ChatInput = () => {
                 onClick={() => setSelectedAgent(agent.id)}
                 className={`flex-shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border transition-all ${
                   isActive
-                    ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)] "
+                    ? "bg-linear-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)]"
                     : "bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.07]"
                 }`}
               >
@@ -116,21 +122,27 @@ const ChatInput = () => {
           onChange={(e) => setValue(e.target.value)}
           value={value}
           placeholder="Ask Anything..."
-          className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 "
+          className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50"
         />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer ">
+            <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer">
               <Paperclip size={16} />
             </button>
-            <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer ">
+
+            <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer">
               <Mic size={16} />
             </button>
           </div>
+
           <button
-            disabled={!value}
+            disabled={!value.trim()}
             onClick={handleCreateMessage}
-            className={`flex items-center justify-center w-8 h-8 rounded-lg border-none cursor-pointer transition-all duration-150 ${value.trim() ? "bg-linear-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white" : "bg-white/[0.05] text-slate-600 cursor-not-allowed "} `}
+            className={`flex items-center justify-center w-8 h-8 rounded-lg border-none cursor-pointer transition-all duration-150 ${
+              value.trim()
+                ? "bg-linear-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white"
+                : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
+            }`}
           >
             <Send size={15} />
           </button>
