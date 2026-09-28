@@ -7,13 +7,22 @@ const messageSchema = new mongoose.Schema(
       ref: "Conversation",
       required: true,
     },
+
     role: {
       type: String,
       enum: ["user", "assistant"],
       required: true,
     },
-    content: String,
+
+    content: {
+      type: String,
+    },
+
     images: [String],
+
+    agent: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -21,4 +30,5 @@ const messageSchema = new mongoose.Schema(
 );
 
 const Message = mongoose.model("Message", messageSchema);
+
 export default Message;

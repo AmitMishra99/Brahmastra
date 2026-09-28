@@ -31,7 +31,7 @@ export const getConversations = async (req, res) => {
 
 export const createMessage = async (req, res) => {
   try {
-    const { conversationId, role, content, images } = req.body;
+    const { conversationId, role, content, images, agent } = req.body;
     if (!conversationId)
       return res.status(500).json({ message: "conversationId not found !!" });
     const message = await Message.create({
@@ -39,6 +39,7 @@ export const createMessage = async (req, res) => {
       content,
       role,
       images,
+      agent,
     });
     return res.status(200).json(message);
   } catch (e) {

@@ -12,12 +12,6 @@ export const agent = async (req, res) => {
       agent,
     });
 
-    await axios.post(`${process.env.AGENT_SERVICE}/save-agent`, {
-      prompt,
-      conversationId,
-      agent: result.agent,
-    });
-
     const response = result.aiResponse;
 
     await addMessages(conversationId, "user", prompt);
@@ -27,6 +21,7 @@ export const agent = async (req, res) => {
       conversationId,
       role: "user",
       content: prompt,
+      agent: result.agent,
     });
 
     await axios.post(`${process.env.CHAT_SERVICE}/create-message`, {
@@ -34,11 +29,13 @@ export const agent = async (req, res) => {
       role: "assistant",
       content: response,
       images: result.images,
+      agent: result.agent,
     });
 
     return res.status(200).json({
       response: result.aiResponse,
       images: result.images,
+      agent: result.agent,
     });
   } catch (e) {
     console.error("Error in agent controller:", e);
