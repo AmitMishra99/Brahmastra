@@ -24,7 +24,8 @@ app.use(
 
 app.use("/api/me", userAuth, getCurrentUser);
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
-app.use("/api/agent", userAuth, proxyWithHeader(process.env.AGENT_SERVICE));
+app.use("/api/agent", userAuth, proxy(process.env.AGENT_SERVICE));
+app.use("/api/billing", userAuth, proxyWithHeader(process.env.BILLING_SERVICE));
 app.use("/api/chat", userAuth, proxyWithHeader(process.env.CHAT_SERVICE));
 
 app.listen(port, () => {
