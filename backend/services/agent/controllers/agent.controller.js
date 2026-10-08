@@ -5,11 +5,13 @@ import { addMessages } from "../config/memory.js";
 export const agent = async (req, res) => {
   try {
     const { prompt, conversationId, agent } = req.body;
+    const userId = req.headers["x-user-id"];
 
     const result = await graph.invoke({
       prompt,
       conversationId,
       agent,
+      userId,
     });
 
     const response = result.aiResponse;
